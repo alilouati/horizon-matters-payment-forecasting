@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering
+\caption{Direction of rolling $h=1$ test errors (seed-averaged forecasts, $n=19$) under each normalization and training regime. One-sided: configurations whose 19 errors all have the same sign; sign test: two-sided $p<0.05$; $|$Bias$|$/MAE: median ratio of the absolute mean signed error to the MAE (1 = every error has the same sign). Suffixes -d and -r denote the direct and recursive strategies; (c) the canonical implementations.}
+\label{tab:r3_bias}
+\vspace{4pt}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lccccc p{6.2cm}}
+\toprule
+\textbf{Variant} & \textbf{Configs} & \textbf{One-sided} & \textbf{Sign test $p<0.05$} & \textbf{Median MAE} & \textbf{Median $|$Bias$|$/MAE} & \textbf{One-sided configurations} \\
+\midrule
+Global, fixed & 14 & 4 & 6 & 3.26 & 0.67 & LSTM-d, MLP-d, N-BEATS (c)-d, Simplified patch Transformer-d \\
+Global, ES & 14 & 1 & 6 & 2.54 & 0.54 & Simplified patch Transformer-d \\
+RevIN, fixed & 12 & 0 & 0 & 2.56 & 0.17 & none \\
+RevIN, ES & 12 & 0 & 0 & 2.23 & 0.08 & none \\
+Anchor, fixed & 12 & 0 & 5 & 2.83 & 0.70 & none \\
+Anchor, ES & 12 & 0 & 0 & 2.59 & 0.22 & none \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

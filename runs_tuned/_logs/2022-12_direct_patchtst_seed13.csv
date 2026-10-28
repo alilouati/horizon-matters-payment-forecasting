@@ -1,0 +1,2 @@
+cutoff,strategy,model,seed,target,covariates,n_train_windows,n_params,train_seconds,val_sMAPE,device,config
+2022-12,direct,patchtst,13,pos_sales_SAR,none,301,17868,22.46,9.24504755502162,cpu,"{""arch"": {""patch_len"": 8, ""d_model"": 32, ""nhead"": 2, ""layers"": 2, ""dim_ff"": 64, ""dropout"": 0.2}, ""train"": {""lr"": 0.001, ""batch"": 16, ""epochs"": 500, ""weight_decay"": 0.001}}"

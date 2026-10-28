@@ -1,0 +1,2 @@
+cutoff,strategy,model,seed,target,covariates,n_train_windows,n_params,train_seconds,val_sMAPE,device,norm,patience,epochs_run,best_epoch,config
+2021-12,recursive,tcn,3,pos_sales_SAR,none,300,6307,11.16,,cpu,revin,0,250,250,"{""arch"": {""channels"": 32, ""kernel"": 3, ""dilations"": [1, 2], ""dropout"": 0.0}, ""train"": {""lr"": 0.001, ""batch"": 32, ""epochs"": 250, ""weight_decay"": 0.0}, ""norm"": ""revin""}"

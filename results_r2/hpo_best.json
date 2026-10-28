@@ -1,0 +1,216 @@
+{
+ "gru-direct": {
+  "cfg": {
+   "arch": {
+    "hidden": 64,
+    "layers": 2,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 16,
+    "epochs": 100,
+    "weight_decay": 0.0001
+   }
+  },
+  "trial": 7,
+  "val_sMAPE": 4.804362282316812,
+  "default_val_sMAPE": 8.620564650781747,
+  "n_params": 38604,
+  "n_trials": 20
+ },
+ "lstm-direct": {
+  "cfg": {
+   "arch": {
+    "hidden": 64,
+    "layers": 2,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 16,
+    "epochs": 100,
+    "weight_decay": 0.001
+   }
+  },
+  "trial": 1,
+  "val_sMAPE": 4.043047905031858,
+  "default_val_sMAPE": 6.1115366502808,
+  "n_params": 51212,
+  "n_trials": 20
+ },
+ "nbeats-direct": {
+  "cfg": {
+   "arch": {
+    "hidden": 64,
+    "layers": 2,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 32,
+    "epochs": 100,
+    "weight_decay": 0.0001
+   }
+  },
+  "trial": 19,
+  "val_sMAPE": 5.900627355709044,
+  "default_val_sMAPE": 31.400030127179665,
+  "n_params": 6540,
+  "n_trials": 20
+ },
+ "patchtst-direct": {
+  "cfg": {
+   "arch": {
+    "patch_len": 8,
+    "d_model": 32,
+    "nhead": 2,
+    "layers": 2,
+    "dim_ff": 64,
+    "dropout": 0.2
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 16,
+    "epochs": 500,
+    "weight_decay": 0.001
+   }
+  },
+  "trial": 8,
+  "val_sMAPE": 4.829133606823663,
+  "default_val_sMAPE": 11.499654532175667,
+  "n_params": 17868,
+  "n_trials": 20
+ },
+ "tcn-direct": {
+  "cfg": {
+   "arch": {
+    "channels": 32,
+    "kernel": 2,
+    "dilations": [
+     1,
+     2
+    ],
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 64,
+    "epochs": 500,
+    "weight_decay": 0.0001
+   }
+  },
+  "trial": 9,
+  "val_sMAPE": 5.592925674983238,
+  "default_val_sMAPE": 11.364261405390574,
+  "n_params": 4620,
+  "n_trials": 20
+ },
+ "gru-recursive": {
+  "cfg": {
+   "arch": {
+    "hidden": 32,
+    "layers": 2,
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 16,
+    "epochs": 500,
+    "weight_decay": 0.001
+   }
+  },
+  "trial": 9,
+  "val_sMAPE": 3.659596144404816,
+  "default_val_sMAPE": 7.585062481957181,
+  "n_params": 9729,
+  "n_trials": 20
+ },
+ "lstm-recursive": {
+  "cfg": {
+   "arch": {
+    "hidden": 16,
+    "layers": 2,
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 32,
+    "epochs": 500,
+    "weight_decay": 0.0001
+   }
+  },
+  "trial": 13,
+  "val_sMAPE": 3.439164739640868,
+  "default_val_sMAPE": 7.3930510812689,
+  "n_params": 3409,
+  "n_trials": 20
+ },
+ "nbeats-recursive": {
+  "cfg": {
+   "arch": {
+    "hidden": 256,
+    "layers": 3,
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 32,
+    "epochs": 100,
+    "weight_decay": 0.001
+   }
+  },
+  "trial": 12,
+  "val_sMAPE": 6.4437364670674775,
+  "default_val_sMAPE": 6.48370692568287,
+  "n_params": 138241,
+  "n_trials": 20
+ },
+ "patchtst-recursive": {
+  "cfg": {
+   "arch": {
+    "patch_len": 4,
+    "d_model": 32,
+    "nhead": 4,
+    "layers": 2,
+    "dim_ff": 2048,
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 64,
+    "epochs": 250,
+    "weight_decay": 0.0001
+   }
+  },
+  "trial": 8,
+  "val_sMAPE": 3.3069620450068147,
+  "default_val_sMAPE": 6.2407656789959844,
+  "n_params": 275393,
+  "n_trials": 20
+ },
+ "tcn-recursive": {
+  "cfg": {
+   "arch": {
+    "channels": 32,
+    "kernel": 3,
+    "dilations": [
+     1,
+     2
+    ],
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 32,
+    "epochs": 250,
+    "weight_decay": 0.0
+   }
+  },
+  "trial": 0,
+  "val_sMAPE": 3.5613628507598687,
+  "default_val_sMAPE": 3.5613628507598687,
+  "n_params": 6305,
+  "n_trials": 20
+ }
+}

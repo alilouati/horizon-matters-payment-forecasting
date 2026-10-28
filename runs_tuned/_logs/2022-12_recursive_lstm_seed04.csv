@@ -1,0 +1,2 @@
+cutoff,strategy,model,seed,target,covariates,n_train_windows,n_params,train_seconds,val_sMAPE,device,config
+2022-12,recursive,lstm,4,pos_sales_SAR,none,312,3409,26.74,11.594779368046805,cpu,"{""arch"": {""hidden"": 16, ""layers"": 2, ""dropout"": 0.0}, ""train"": {""lr"": 0.001, ""batch"": 32, ""epochs"": 500, ""weight_decay"": 0.0001}}"

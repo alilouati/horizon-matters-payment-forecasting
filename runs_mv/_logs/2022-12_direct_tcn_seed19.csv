@@ -1,0 +1,2 @@
+cutoff,strategy,model,seed,target,covariates,n_train_windows,n_params,train_seconds,val_sMAPE,device,config
+2022-12,direct,tcn,19,pos_sales_SAR,pos_transactions+pos_terminals,301,6732,12.46,5.17256026347996,cpu,"{""arch"": {""channels"": 32, ""kernel"": 3, ""dilations"": [1, 2], ""dropout"": 0.0}, ""train"": {""lr"": 0.001, ""batch"": 32, ""epochs"": 250, ""weight_decay"": 0.0}}"

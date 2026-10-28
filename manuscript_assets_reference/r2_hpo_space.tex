@@ -1,0 +1,6 @@
+LSTM & hidden: 16, 32, 64, 128; layers: 1, 2; dropout: 0.0, 0.1, 0.2 \\
+GRU & hidden: 16, 32, 64, 128; layers: 1, 2; dropout: 0.0, 0.1, 0.2 \\
+TCN & channels: 16, 32, 64; kernel: 2, 3; dilations: [1, 2], [1, 2, 4], [1, 2, 4, 8]; dropout: 0.0, 0.1, 0.2 \\
+MLP & hidden: 64, 128, 256, 512; layers: 2, 3, 4; dropout: 0.0, 0.1, 0.2 \\
+Simplified patch Transformer & patch len: 3, 4, 6, 8; d model: 16, 32, 64; nhead: 2, 4; layers: 1, 2; dim ff: 64, 128, 256, 2048; dropout: 0.0, 0.1, 0.2 \\
+All (training) & lr: 0.0003, 0.001, 0.003; batch: 16, 32, 64; epochs: 100, 250, 500; weight decay: 0.0, 0.0001, 0.001 \\

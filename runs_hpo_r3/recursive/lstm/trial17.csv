@@ -1,0 +1,4 @@
+strategy,model,trial,seed,cfg,val_sMAPE,n_params,train_seconds,best_epoch
+recursive,lstm,17,1000,"{""arch"": {""hidden"": 64, ""layers"": 1, ""dropout"": 0.2}, ""train"": {""lr"": 0.0003, ""batch"": 16, ""epochs"": 250, ""weight_decay"": 0.0, ""patience"": 25}, ""norm"": ""anchor""}",4.514820675237907,17217,2.82,14
+recursive,lstm,17,1001,"{""arch"": {""hidden"": 64, ""layers"": 1, ""dropout"": 0.2}, ""train"": {""lr"": 0.0003, ""batch"": 16, ""epochs"": 250, ""weight_decay"": 0.0, ""patience"": 25}, ""norm"": ""anchor""}",4.684608903485852,17217,4.71,37
+recursive,lstm,17,1002,"{""arch"": {""hidden"": 64, ""layers"": 1, ""dropout"": 0.2}, ""train"": {""lr"": 0.0003, ""batch"": 16, ""epochs"": 250, ""weight_decay"": 0.0, ""patience"": 25}, ""norm"": ""anchor""}",4.575808521370401,17217,3.74,30

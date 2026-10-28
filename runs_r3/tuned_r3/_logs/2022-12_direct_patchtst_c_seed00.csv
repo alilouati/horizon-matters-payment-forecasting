@@ -1,0 +1,2 @@
+cutoff,strategy,model,seed,target,covariates,n_train_windows,n_params,train_seconds,val_sMAPE,device,norm,patience,epochs_run,best_epoch,config
+2022-12,direct,patchtst_c,0,pos_sales_SAR,none,301,83406,4.61,2.502379711776542,cpu,global,25,40,15,"{""arch"": {""patch_len"": 3, ""stride"": 3, ""d_model"": 64, ""nhead"": 2, ""layers"": 3, ""dim_ff"": 64, ""dropout"": 0.2, ""head_dropout"": 0.0}, ""train"": {""lr"": 0.003, ""batch"": 32, ""epochs"": 500, ""weight_decay"": 0.0001, ""patience"": 25}, ""norm"": ""global""}"

@@ -1,0 +1,340 @@
+{
+ "gru-direct": {
+  "cfg": {
+   "arch": {
+    "hidden": 64,
+    "layers": 2,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 32,
+    "epochs": 500,
+    "weight_decay": 0.001,
+    "patience": 25
+   },
+   "norm": "revin"
+  },
+  "trial": 13,
+  "val_sMAPE": 3.5123489389083002,
+  "default_val_sMAPE": 4.983645265649117,
+  "n_params": 38606,
+  "n_trials": 20
+ },
+ "lstm-direct": {
+  "cfg": {
+   "arch": {
+    "hidden": 64,
+    "layers": 2,
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 16,
+    "epochs": 500,
+    "weight_decay": 0.001,
+    "patience": 25
+   },
+   "norm": "revin"
+  },
+  "trial": 8,
+  "val_sMAPE": 3.299724927963167,
+  "default_val_sMAPE": 5.037672627456516,
+  "n_params": 51214,
+  "n_trials": 20
+ },
+ "nbeats-direct": {
+  "cfg": {
+   "arch": {
+    "hidden": 128,
+    "layers": 2,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 32,
+    "epochs": 500,
+    "weight_decay": 0.0,
+    "patience": 25
+   },
+   "norm": "revin"
+  },
+  "trial": 2,
+  "val_sMAPE": 3.2453556000144523,
+  "default_val_sMAPE": 5.720610738429759,
+  "n_params": 21262,
+  "n_trials": 20
+ },
+ "nbeats_c-direct": {
+  "cfg": {
+   "arch": {
+    "basis": "generic",
+    "blocks": 12,
+    "layers": 2,
+    "width": 256,
+    "dropout": 0.2
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 32,
+    "epochs": 250,
+    "weight_decay": 0.0001,
+    "patience": 25
+   },
+   "norm": "revin"
+  },
+  "trial": 4,
+  "val_sMAPE": 2.8834813778069073,
+  "default_val_sMAPE": 4.248665226759066,
+  "n_params": 977330,
+  "n_trials": 20
+ },
+ "patchtst-direct": {
+  "cfg": {
+   "arch": {
+    "patch_len": 3,
+    "d_model": 64,
+    "nhead": 4,
+    "layers": 1,
+    "dim_ff": 2048,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.003,
+    "batch": 64,
+    "epochs": 250,
+    "weight_decay": 0.001,
+    "patience": 25
+   },
+   "norm": "revin"
+  },
+  "trial": 4,
+  "val_sMAPE": 3.446103126650445,
+  "default_val_sMAPE": 8.926527062028827,
+  "n_params": 282702,
+  "n_trials": 20
+ },
+ "patchtst_c-direct": {
+  "cfg": {
+   "arch": {
+    "patch_len": 3,
+    "stride": 3,
+    "d_model": 64,
+    "nhead": 2,
+    "layers": 3,
+    "dim_ff": 64,
+    "dropout": 0.2,
+    "head_dropout": 0.0
+   },
+   "train": {
+    "lr": 0.003,
+    "batch": 32,
+    "epochs": 500,
+    "weight_decay": 0.0001,
+    "patience": 25
+   },
+   "norm": "global"
+  },
+  "trial": 8,
+  "val_sMAPE": 2.4092323026756817,
+  "default_val_sMAPE": 3.3220200791423298,
+  "n_params": 83406,
+  "n_trials": 20
+ },
+ "tcn-direct": {
+  "cfg": {
+   "arch": {
+    "channels": 16,
+    "kernel": 2,
+    "dilations": [
+     1,
+     2,
+     4
+    ],
+    "dropout": 0.2
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 16,
+    "epochs": 250,
+    "weight_decay": 0.0,
+    "patience": 25
+   },
+   "norm": "revin"
+  },
+  "trial": 18,
+  "val_sMAPE": 3.2158124865318904,
+  "default_val_sMAPE": 6.196990446164503,
+  "n_params": 1822,
+  "n_trials": 20
+ },
+ "gru-recursive": {
+  "cfg": {
+   "arch": {
+    "hidden": 64,
+    "layers": 1,
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 32,
+    "epochs": 250,
+    "weight_decay": 0.0,
+    "patience": 25
+   },
+   "norm": "global"
+  },
+  "trial": 0,
+  "val_sMAPE": 3.139499067858065,
+  "default_val_sMAPE": 3.139499067858065,
+  "n_params": 12929,
+  "n_trials": 20
+ },
+ "lstm-recursive": {
+  "cfg": {
+   "arch": {
+    "hidden": 32,
+    "layers": 1,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 16,
+    "epochs": 250,
+    "weight_decay": 0.0,
+    "patience": 25
+   },
+   "norm": "global"
+  },
+  "trial": 7,
+  "val_sMAPE": 3.0690614652825823,
+  "default_val_sMAPE": 3.08940336721933,
+  "n_params": 4513,
+  "n_trials": 20
+ },
+ "nbeats-recursive": {
+  "cfg": {
+   "arch": {
+    "hidden": 256,
+    "layers": 3,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 32,
+    "epochs": 250,
+    "weight_decay": 0.0001,
+    "patience": 25
+   },
+   "norm": "anchor"
+  },
+  "trial": 10,
+  "val_sMAPE": 2.3442512678883998,
+  "default_val_sMAPE": 3.19064750398195,
+  "n_params": 138241,
+  "n_trials": 20
+ },
+ "nbeats_c-recursive": {
+  "cfg": {
+   "arch": {
+    "basis": "interpretable",
+    "blocks": 6,
+    "layers": 4,
+    "width": 128,
+    "dropout": 0.1
+   },
+   "train": {
+    "lr": 0.0003,
+    "batch": 16,
+    "epochs": 500,
+    "weight_decay": 0.0001,
+    "patience": 25
+   },
+   "norm": "anchor"
+  },
+  "trial": 16,
+  "val_sMAPE": 2.1865417226808828,
+  "default_val_sMAPE": 3.8884110272816357,
+  "n_params": 322560,
+  "n_trials": 20
+ },
+ "patchtst-recursive": {
+  "cfg": {
+   "arch": {
+    "patch_len": 8,
+    "d_model": 16,
+    "nhead": 2,
+    "layers": 2,
+    "dim_ff": 256,
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.003,
+    "batch": 16,
+    "epochs": 500,
+    "weight_decay": 0.0,
+    "patience": 25
+   },
+   "norm": "anchor"
+  },
+  "trial": 16,
+  "val_sMAPE": 2.6760281937820487,
+  "default_val_sMAPE": 3.346944607063245,
+  "n_params": 19441,
+  "n_trials": 20
+ },
+ "patchtst_c-recursive": {
+  "cfg": {
+   "arch": {
+    "patch_len": 8,
+    "stride": 3,
+    "d_model": 64,
+    "nhead": 2,
+    "layers": 2,
+    "dim_ff": 128,
+    "dropout": 0.2,
+    "head_dropout": 0.1
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 16,
+    "epochs": 500,
+    "weight_decay": 0.0,
+    "patience": 25
+   },
+   "norm": "global"
+  },
+  "trial": 3,
+  "val_sMAPE": 2.1541533441049525,
+  "default_val_sMAPE": 2.3870405427336645,
+  "n_params": 68419,
+  "n_trials": 20
+ },
+ "tcn-recursive": {
+  "cfg": {
+   "arch": {
+    "channels": 32,
+    "kernel": 3,
+    "dilations": [
+     1,
+     2,
+     4
+    ],
+    "dropout": 0.0
+   },
+   "train": {
+    "lr": 0.001,
+    "batch": 32,
+    "epochs": 250,
+    "weight_decay": 0.0001,
+    "patience": 25
+   },
+   "norm": "anchor"
+  },
+  "trial": 10,
+  "val_sMAPE": 2.2649070716657627,
+  "default_val_sMAPE": 3.216145986921269,
+  "n_params": 9409,
+  "n_trials": 20
+ }
+}

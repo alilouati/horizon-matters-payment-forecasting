@@ -1,0 +1,11 @@
+LSTM (direct) & h=64, l=2, do=0.1 & lr=0.0003, b=16, ep=100, wd=0.001 & 51{,}212 & 6.11 & 4.04 & 1 \\
+GRU (direct) & h=64, l=2, do=0.1 & lr=0.0003, b=16, ep=100, wd=0.0001 & 38{,}604 & 8.62 & 4.80 & 7 \\
+TCN (direct) & ch=32, k=2, d=(1,2), do=0.1 & lr=0.0003, b=64, ep=500, wd=0.0001 & 4{,}620 & 11.36 & 5.59 & 9 \\
+MLP (direct) & h=64, l=2, do=0.1 & lr=0.0003, b=32, ep=100, wd=0.0001 & 6{,}540 & 31.40 & 5.90 & 19 \\
+Simplified patch Transformer (direct) & P=8, dm=32, heads=2, l=2, ff=64, do=0.2 & lr=0.001, b=16, ep=500, wd=0.001 & 17{,}868 & 11.50 & 4.83 & 8 \\
+\addlinespace
+LSTM (recursive) & h=16, l=2, do=0.0 & lr=0.001, b=32, ep=500, wd=0.0001 & 3{,}409 & 7.39 & 3.44 & 13 \\
+GRU (recursive) & h=32, l=2, do=0.0 & lr=0.0003, b=16, ep=500, wd=0.001 & 9{,}729 & 7.59 & 3.66 & 9 \\
+TCN (recursive) & ch=32, k=3, d=(1,2), do=0.0 & lr=0.001, b=32, ep=250, wd=0 & 6{,}305 & 3.56 & 3.56 & default \\
+MLP (recursive) & h=256, l=3, do=0.0 & lr=0.0003, b=32, ep=100, wd=0.001 & 138{,}241 & 6.48 & 6.44 & 12 \\
+Simplified patch Transformer (recursive) & P=4, dm=32, heads=4, l=2, ff=2048, do=0.0 & lr=0.0003, b=64, ep=250, wd=0.0001 & 275{,}393 & 6.24 & 3.31 & 8 \\

@@ -1,0 +1,2 @@
+cutoff,strategy,model,seed,target,covariates,n_train_windows,n_params,train_seconds,val_sMAPE,device,norm,patience,epochs_run,best_epoch,config
+2018-12,recursive,patchtst,2,pos_sales_SAR,none,264,563075,35.77,,cpu,revin,0,250,250,"{""arch"": {""patch_len"": 6, ""d_model"": 64, ""nhead"": 4, ""layers"": 2, ""dim_ff"": 2048, ""dropout"": 0.1}, ""train"": {""lr"": 0.001, ""batch"": 32, ""epochs"": 250, ""weight_decay"": 0.0}, ""norm"": ""revin""}"

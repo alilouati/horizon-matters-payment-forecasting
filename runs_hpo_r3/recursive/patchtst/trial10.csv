@@ -1,0 +1,4 @@
+strategy,model,trial,seed,cfg,val_sMAPE,n_params,train_seconds,best_epoch
+recursive,patchtst,10,1000,"{""arch"": {""patch_len"": 4, ""d_model"": 32, ""nhead"": 4, ""layers"": 1, ""dim_ff"": 128, ""dropout"": 0.2}, ""train"": {""lr"": 0.0003, ""batch"": 16, ""epochs"": 250, ""weight_decay"": 0.001, ""patience"": 25}, ""norm"": ""anchor""}",3.4035408128164426,13089,1.87,14
+recursive,patchtst,10,1001,"{""arch"": {""patch_len"": 4, ""d_model"": 32, ""nhead"": 4, ""layers"": 1, ""dim_ff"": 128, ""dropout"": 0.2}, ""train"": {""lr"": 0.0003, ""batch"": 16, ""epochs"": 250, ""weight_decay"": 0.001, ""patience"": 25}, ""norm"": ""anchor""}",3.2391802245084125,13089,2.88,32
+recursive,patchtst,10,1002,"{""arch"": {""patch_len"": 4, ""d_model"": 32, ""nhead"": 4, ""layers"": 1, ""dim_ff"": 128, ""dropout"": 0.2}, ""train"": {""lr"": 0.0003, ""batch"": 16, ""epochs"": 250, ""weight_decay"": 0.001, ""patience"": 25}, ""norm"": ""anchor""}",4.048615413418824,13089,1.72,10

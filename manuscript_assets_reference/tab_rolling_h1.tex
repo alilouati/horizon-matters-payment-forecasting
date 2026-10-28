@@ -1,0 +1,20 @@
+LSTM (direct) & 7.14 $\pm$ 2.57 & 11.53 $\pm$ 3.67 & [9.81, 13.25] & 6.22 & 11.34 \\
+GRU (direct) & 5.37 $\pm$ 1.91 & 5.38 $\pm$ 1.55 & [4.66, 6.10] & 3.07 & 4.21 \\
+TCN (direct) & 6.60 $\pm$ 2.22 & 7.49 $\pm$ 3.20 & [5.99, 8.98] & 4.20 & 4.44 \\
+MLP (direct) & 24.21 $\pm$ 4.72 & 30.39 $\pm$ 5.21 & [27.95, 32.83] & 20.37 & 30.54 \\
+Simplified patch Transformer (direct) & 14.48 $\pm$ 5.97 & 24.70 $\pm$ 7.18 & [21.34, 28.06] & 12.41 & 24.48 \\
+TCN-24 (receptive field 31) (direct) & 12.05 $\pm$ 5.66 & 14.26 $\pm$ 7.21 & [10.89, 17.63] & 8.81 & 14.04 \\
+Simplified patch Transformer (small) (direct) & 9.82 $\pm$ 3.85 & 16.79 $\pm$ 4.79 & [14.55, 19.03] & 8.79 & 16.68 \\
+\addlinespace
+LSTM (recursive) & 5.35 $\pm$ 1.66 & 5.36 $\pm$ 1.61 & [4.61, 6.11] & 3.07 & 4.37 \\
+GRU (recursive) & 6.38 $\pm$ 2.15 & 6.49 $\pm$ 2.15 & [5.48, 7.49] & 3.77 & 6.00 \\
+TCN (recursive) & 5.67 $\pm$ 1.66 & 6.66 $\pm$ 2.39 & [5.55, 7.78] & 3.74 & 5.28 \\
+MLP (recursive) & 9.28 $\pm$ 5.91 & 10.46 $\pm$ 6.92 & [7.22, 13.70] & 6.36 & 8.99 \\
+Simplified patch Transformer (recursive) & 6.49 $\pm$ 1.70 & 6.84 $\pm$ 3.39 & [5.25, 8.43] & 3.79 & 5.71 \\
+TCN-24 (receptive field 31) (recursive) & 6.76 $\pm$ 3.18 & 7.28 $\pm$ 2.99 & [5.88, 8.68] & 4.15 & 3.95 \\
+Simplified patch Transformer (small) (recursive) & 5.54 $\pm$ 1.64 & 7.35 $\pm$ 2.31 & [6.27, 8.43] & 4.06 & 6.49 \\
+\addlinespace
+Naive & 6.50 & 6.83 & -- & 3.91 & -- \\
+Seasonal Naive & 9.47 & 7.60 & -- & 4.13 & -- \\
+ETS & 5.19 & 6.24 & -- & 3.54 & -- \\
+SARIMA & 3.68 & 4.18 & -- & 2.36 & -- \\

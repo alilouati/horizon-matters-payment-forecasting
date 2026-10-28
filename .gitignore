@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+logs/
+results/
+results_tuned/
+results_mv/
+results_tx/
+manuscript_assets/
+*_bundle.zip
+.DS_Store
