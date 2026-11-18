@@ -3,9 +3,14 @@
 
 For every comparison reported in the manuscript, the loss differential is the difference in the symmetric absolute
 percentage error, d_t = sAPE_A(t) - sAPE_B(t) with sAPE = 200|y - yhat| / (|y| + |yhat|), whose mean is the sMAPE
-difference. The DM statistic uses the long-run variance with h-1 autocovariances (capped at n-2) and the
-Harvey–Leybourne–Newbold correction, compared with t(n-1). Squared-error (SE) DM tests on the same pairs are reported
-for comparison. Holm adjustment is applied within each family of tests listed below.
+difference. The test is implemented in dmtest.py (exact formula there): truncated long-run variance with h-1
+autocovariances, Harvey–Leybourne–Newbold factor with the actual forecast horizon h, t(n-1) reference. Tests with
+h >= n (no defined HLN factor; horizons 8-12 on the n = 8 complete origins) and tests with a non-positive variance
+estimate are reported as not available (no fallback) and are excluded from the Holm families. A Bartlett-weighted
+(Newey–West) variance is computed for every test with h < n as a sensitivity analysis, and the procedure of the
+previous package version (capped horizon in the HLN factor, gamma_0/n fallback) is recomputed for documentation.
+Squared-error (SE) DM tests on the same pairs are reported for comparison. Holm adjustment is applied within each
+family of tests listed below.
 
 Families (seed-averaged forecasts):
   F0  main experiment, rolling h=1 test (n=19): direct GRU vs direct TCN                          (Section 6.1)
@@ -16,7 +21,8 @@ Families (seed-averaged forecasts):
   F5  second series, direct GRU vs Naive, ETS, SARIMA, h=1..12 (n=8)                                (Section 6.11)
   F6  corrected configurations (Section 6.13), rolling h=1: 14 x 4                                  (Table 24)
   F7  corrected configurations, h=1..12 (n=8): 14 x 4 x 12                                          (Section 6.13)
-Output: results_r3/R4_dm_smape.csv (all tests), results_r3/r4_summary.json, and the LaTeX tables
+Output: results_r3/R4_dm_smape.csv (all tests, with status, sensitivity and legacy columns),
+results_r3/r4_summary.json, results_r3/R4_dm_status_by_family_h.csv (availability by family and horizon), and the LaTeX tables
 manuscript_assets/tab_gru_tcn.tex (Table 9) and tab_dm_classical.tex (Table 11).
 """
 import glob
@@ -27,42 +33,10 @@ import pandas as pd
 from scipy import stats
 
 from common import ROOT, H
+from dmtest import dm_test, legacy_dm, holm
 
 CLS = ["naive", "snaive", "ets", "sarima"]
 MAIN = ["lstm", "gru", "tcn", "nbeats", "patchtst"]
-
-
-def dm(d, h):
-    d = np.asarray(d, float)
-    n = len(d)
-    if n < 3 or np.allclose(d, 0):
-        return np.nan, np.nan
-    lag = min(h - 1, n - 2)
-    dc = d - d.mean()
-    gam = [np.sum(dc[k:] * dc[:n - k]) / n for k in range(lag + 1)]
-    var = (gam[0] + 2 * sum(gam[1:])) / n
-    if var <= 0:
-        var = gam[0] / n
-    stat = d.mean() / np.sqrt(var)
-    hh = lag + 1
-    corr = (n + 1 - 2 * hh + hh * (hh - 1) / n) / n
-    if corr <= 0:
-        return stat, np.nan
-    stat *= np.sqrt(corr)
-    return stat, 2 * stats.t.sf(abs(stat), n - 1)
-
-
-def holm(p):
-    p = np.asarray(p, float)
-    out = np.full_like(p, np.nan)
-    ok = ~np.isnan(p)
-    idx = np.argsort(p[ok])
-    m = ok.sum()
-    adj = np.minimum(1, np.maximum.accumulate((m - np.arange(m)) * p[ok][idx]))
-    tmp = np.empty(m)
-    tmp[idx] = adj
-    out[ok] = tmp
-    return out
 
 
 def rd(pattern, seeds=None):
@@ -93,10 +67,14 @@ def test(fam, E, a, b, h, origins=None):
     if origins is not None:
         A, B = A.loc[origins], B.loc[origins]
     B = B.reindex(A.index)
-    s1, p1 = dm(A.sape - B.sape, h)
-    s2, p2 = dm(A.se - B.se, h)
-    rows.append(dict(family=fam, a=a, b=b, h=h, n=len(A), diff_smape=float((A.sape - B.sape).mean()),
-                     stat_sape=s1, p_sape=p1, stat_se=s2, p_se=p2))
+    r = dict(family=fam, a=a, b=b, h=h, n=len(A), diff_smape=float((A.sape - B.sape).mean()))
+    for k, d in [("sape", (A.sape - B.sape).values), ("se", (A.se - B.se).values)]:
+        t = dm_test(d, h)
+        ls, lp, lsub, lfb = legacy_dm(d, h)
+        r.update({f"stat_{k}": t["stat"], f"p_{k}": t["p"], f"status_{k}": t["status"],
+                  f"stat_{k}_bart": t["stat_bart"], f"p_{k}_bart": t["p_bart"],
+                  f"stat_{k}_legacy": ls, f"p_{k}_legacy": lp, f"legacy_hsub_{k}": lsub, f"legacy_fallback_{k}": lfb})
+    rows.append(r)
 
 
 W = ROOT
@@ -142,32 +120,46 @@ for a in cfg3:
             test("F7", Er, a, b, h, compr)
 
 R = pd.DataFrame(rows)
-R["p_sape_holm"] = np.nan
-R["p_se_holm"] = np.nan
 for f, g in R.groupby("family"):
-    R.loc[g.index, "p_sape_holm"] = holm(g.p_sape.values)
-    R.loc[g.index, "p_se_holm"] = holm(g.p_se.values)
+    for c in ["p_sape", "p_se", "p_sape_bart", "p_se_bart", "p_sape_legacy", "p_se_legacy"]:
+        R.loc[g.index, c + "_holm"] = holm(g[c].values)
 (ROOT / "results_r3").mkdir(exist_ok=True)
 R.to_csv(ROOT / "results_r3" / "R4_dm_smape.csv", index=False)
 
 
 def count(fam, col, sign, alpha=0.05):
     g = R[R.family == fam]
-    s = "stat_sape" if "sape" in col else "stat_se"
+    base = col.replace("_holm", "")
+    s = base.replace("p_", "stat_", 1)
     return int(((g[col] < alpha) & (np.sign(g[s]) == sign)).sum())
 
 
-summary = {"n_tests": R.groupby("family").size().to_dict()}
+summary = {"n_tests": R.groupby("family").size().to_dict(),
+           "status_sape": R.groupby(["family", "status_sape"]).size().unstack(fill_value=0).to_dict("index"),
+           "status_se": R.groupby(["family", "status_se"]).size().unstack(fill_value=0).to_dict("index"),
+           "legacy_hsub_sape": R.groupby("family").legacy_hsub_sape.sum().astype(int).to_dict(),
+           "legacy_fallback_sape": R.groupby("family").legacy_fallback_sape.sum().astype(int).to_dict()}
+cols = ["p_sape", "p_sape_holm", "p_sape_bart", "p_sape_bart_holm", "p_sape_legacy", "p_sape_legacy_holm",
+        "p_se", "p_se_holm", "p_se_bart", "p_se_bart_holm", "p_se_legacy", "p_se_legacy_holm"]
 for f in sorted(R.family.unique()):
-    summary[f] = {c: {"better": count(f, c, -1), "worse": count(f, c, 1)} for c in ["p_sape", "p_sape_holm", "p_se", "p_se_holm"]}
+    summary[f] = {c: {"better": count(f, c, -1), "worse": count(f, c, 1)} for c in cols}
+st = R.groupby(["family", "h"]).agg(tests=("status_sape", "size"),
+                                    ok_sape=("status_sape", lambda x: int((x == "ok").sum())),
+                                    na_horizon=("status_sape", lambda x: int((x == "na_horizon").sum())),
+                                    na_variance_sape=("status_sape", lambda x: int((x == "na_variance").sum())),
+                                    na_variance_se=("status_se", lambda x: int((x == "na_variance").sum())),
+                                    legacy_hsub=("legacy_hsub_sape", "sum"),
+                                    legacy_fallback_sape=("legacy_fallback_sape", "sum"),
+                                    legacy_fallback_se=("legacy_fallback_se", "sum")).reset_index()
+st.to_csv(ROOT / "results_r3" / "R4_dm_status_by_family_h.csv", index=False)
 (ROOT / "results_r3" / "r4_summary.json").write_text(json.dumps(summary, indent=1))
 print(json.dumps(summary, indent=1))
 
 
 # ---------------------------------------------------------------- LaTeX tables
 LAB = {"lstm": "LSTM", "gru": "GRU", "tcn": "TCN", "nbeats": "MLP", "patchtst": "Simplified patch Transformer"}
-f = lambda x, d=2: "--" if pd.isna(x) else f"{x:.{d}f}"
-fp = lambda x: "$<$0.001" if x < 0.001 else f"{x:.3f}"
+f = lambda x, d=2: "n/a" if pd.isna(x) else f"{x:.{d}f}"
+fp = lambda x: "n/a" if pd.isna(x) else ("$<$0.001" if x < 0.001 else f"{x:.3f}")
 OUT = ROOT / "manuscript_assets"
 OUT.mkdir(exist_ok=True)
 t2 = pd.read_csv(ROOT / "results" / "T2_horizon_profile.csv")
@@ -193,3 +185,33 @@ for m in cfg:
         lines.append("\\addlinespace")
 (OUT / "tab_dm_classical.tex").write_text("\n".join(lines) + "\n")
 print("tables written")
+
+# ---------------------------------------------------------------- availability and sensitivity (Appendix)
+FAMLAB = {"F0": "GRU vs TCN, $h=1$ (Sect.~\\ref{subsec:neural_results})",
+          "F1": "Main experiment, $h=1$ (Table~\\ref{tab:dm_classical})",
+          "F2": "GRU vs TCN by horizon (Table~\\ref{tab:gru_tcn})",
+          "F3": "Main experiment by horizon (Sect.~\\ref{subsec:horizon_results})",
+          "F4": "Tuned configurations, $h=1$ (Sect.~\\ref{subsec:hpo_results})",
+          "F5": "Second series by horizon (Sect.~\\ref{subsec:second_series})",
+          "F6": "Selected configurations, $h=1$ (Table~\\ref{tab:r3_tuned})",
+          "F7": "Selected configurations by horizon (Sect.~\\ref{subsec:r3_results})"}
+lines = []
+for fam in ["F2", "F3", "F5", "F7"]:
+    g = R[R.family == fam]
+    cells = []
+    for h in range(1, 8):
+        x = g[g.h == h]
+        cells.append(f"{int((x.status_sape == 'na_variance').sum())} ({int((x.status_se == 'na_variance').sum())})")
+    nh = int((g.status_sape == "na_horizon").sum())
+    ok = int((g.status_sape == "ok").sum())
+    lines.append(f"{FAMLAB[fam]} & {len(g)} & {len(g[g.h == 1])} & " + " & ".join(cells) + f" & {nh} & {ok} \\\\")
+(OUT / "tab_dm_availability.tex").write_text("\n".join(lines) + "\n")
+lines = []
+for fam in sorted(R.family.unique()):
+    g = R[R.family == fam]
+    def bw(col):
+        return f"{count(fam, col, -1)} / {count(fam, col, 1)}"
+    lines.append(f"{FAMLAB[fam]} & {len(g)} & {int((g.status_sape == 'ok').sum())} & {bw('p_sape')} & {bw('p_sape_holm')} & "
+                 f"{bw('p_sape_bart_holm')} & {bw('p_sape_legacy_holm')} & {bw('p_se_holm')} \\\\")
+(OUT / "tab_dm_sensitivity.tex").write_text("\n".join(lines) + "\n")
+print("appendix tables written")

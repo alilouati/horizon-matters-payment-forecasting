@@ -1,7 +1,13 @@
 # Reproduction package: deep multi-horizon forecasting of Saudi POS sales
 
 This package contains the code, input data, stored forecasts and run logs behind every number, table and figure
-of the manuscript. `INVENTORY.md` lists every file and maps each script to the tables and figures it produces.
+of the manuscript. `INVENTORY.md` lists every file and maps each script to the tables and figures it produces;
+`CLAIMS.md` maps every numerical comparison stated in the manuscript to the stored predictions, the aggregation rule
+and the generated output that supports it.
+
+**Version.** This is release v1.1.0 (tag `v1.1.0`), the version cited in the revised manuscript. The file
+`audit/reproduction_log.txt` records the verification run of this release (environment, every step, the check
+against the reference tables and the SHA-256 checksum of every generated file).
 
 ## Requirements
 
@@ -17,8 +23,8 @@ python reproduce_results.py --check    # also compares the regenerated LaTeX tab
 python reproduce_results.py --skip 02_anomaly_screening.py   # if statsmodels is not installed (uses data/anomaly_flags.csv)
 ```
 
-The script runs the analysis steps in order (01, 02, 05, 08 `--summarize`, 10, 06, 07, 11, 12, 13, 14, 15) and
-writes `results*/` and `manuscript_assets/`. Every step reads only the input data, the stored forecasts in
+The script runs the analysis steps in order (01, 02, 05, 08 `--summarize`, 10, 06, 07, 11, 12, 13, 14, 15, 16),
+writes `results*/` and `manuscript_assets/`, and records the run in `audit/reproduction_log.txt`. Every step reads only the input data, the stored forecasts in
 `runs*/` or the outputs of earlier steps.
 
 ## Retraining all models
@@ -34,7 +40,9 @@ python reproduce_results.py
 Each launcher runs in the background (open it in Spyder and press Run, or call it from a terminal), logs its
 progress in `logs/`, skips runs that already exist and can be restarted. The reported results were produced on
 macOS (Apple silicon, CPU, one thread per run) with Python 3.11, PyTorch 2.10, statsmodels 0.14, NumPy 1.24 and
-pandas 2.1; the main experiment took about 25 minutes on 8 parallel workers.
+pandas 2.1; the main experiment took about 25 minutes on 8 parallel workers. The analysis steps of v1.1.0 were
+verified (all reference tables byte-identical) with Python 3.13, NumPy 2.5, pandas 3.0, SciPy 1.18 and
+Matplotlib 3.11 (`audit/reproduction_log.txt`, `requirements-verified.txt`).
 
 ## Data
 
@@ -59,12 +67,25 @@ patch Transformer; `nbeats_c` and `patchtst_c` are canonical N-BEATS and canonic
 **Seeds.** Python, NumPy and PyTorch seeds and the mini-batch order are fixed per run; deterministic algorithms are
 requested. Results are reported as distributions over seeds.
 
-**Statistical tests.** `15_dm_tests_smape.py` computes all Diebold–Mariano tests reported in the manuscript with the
-symmetric absolute percentage error as loss (its mean is the sMAPE), the Harvey–Leybourne–Newbold correction and
-Newey–West lag h−1 (capped at n−2), with Holm-adjusted p-values within each family of tests; the squared-error
-version is reported alongside as a robustness check (`tab_*_se.tex`, columns `*_se` of `R4_dm_smape.csv`).
-`05_analyze.py` (`results/T4_dm_tests.csv`) keeps the squared-error tests. Bootstrap intervals use the circular
-moving-block bootstrap (`10_bootstrap.py`, `14_normalization_bootstrap.py`).
+**Statistical tests.** All Diebold–Mariano tests use `dmtest.py`, which states the exact formula. The loss
+differential is the difference in the symmetric absolute percentage error (its mean is the sMAPE difference); the
+long-run variance is the truncated, untapered sum of h−1 autocovariances of Diebold and Mariano (1995) — not a
+Newey–West (Bartlett-weighted) estimator; the Harvey–Leybourne–Newbold factor uses the actual forecast horizon h;
+the reference distribution is t(n−1). Tests with h ≥ n (horizons 8–12 on the eight complete origins) and tests whose
+variance estimate is not positive are reported as not available (no fallback) and are excluded from the Holm
+families. A Bartlett-weighted variance is computed for every test as a sensitivity analysis, and the procedure of
+v1.0.0 (horizon min(h−1, n−2)+1 in the HLN factor, γ0/n when the variance estimate is not positive) is recomputed
+for comparison (`*_bart` and `*_legacy` columns of `results_r3/R4_dm_smape.csv`; availability by family and horizon
+in `results_r3/R4_dm_status_by_family_h.csv`). Squared-error versions are reported alongside (`*_se`).
+The numerical reproducibility of these p-values does not establish their finite-sample calibration: with eight
+origins and up to six autocovariances, horizon-wise p-values are descriptive.
+
+**Bootstrap intervals.** Circular moving-block bootstrap of the mean difference in sAPE between seed-averaged
+forecasts (`10_bootstrap.py`, `14_normalization_bootstrap.py`). `16_bootstrap_simultaneous.py` writes the
+Bonferroni-adjusted simultaneous intervals used in the text (Table 10: one family of 11 comparisons per sample,
+with a joint family of 22 as sensitivity; Section 6.13: 56 and 48 comparisons), their sensitivity to block lengths
+2, 3 and 4, and every origin-level loss difference (`results_r3/R5_*`). The intervals are conditional on the stored
+trained forecasts and the observed test period; they do not measure uncertainty from retraining on other data.
 
 **Original scripts.** The original exploratory scripts trained unseeded models and did not save per-origin
 forecasts; they are superseded by this package and are not needed to reproduce the results.

@@ -1,23 +1,25 @@
 # Inventory of the reproduction package
 
 The package has five kinds of content: Python code, configuration files, input data, stored forecasts and run
-logs. Every result table and figure of the manuscript can be regenerated from the input data and the stored
+logs, plus documentation (`README.md`, this file, `CLAIMS.md`) and the audit log of the verification run
+(`audit/reproduction_log.txt`). This inventory describes release v1.1.0. Every result table and figure of the manuscript can be regenerated from the input data and the stored
 forecasts with one command (`python reproduce_results.py`, no PyTorch needed, about 5 minutes on a laptop CPU).
 Retraining the models from the input data is done with the four training launchers (Section 1c).
 
-## 1. Python code (23 files)
+## 1. Python code (25 files)
 
-### 1a. Shared modules (3)
+### 1a. Shared modules (4)
 
 | File | Role |
 |---|---|
 | `common.py` | All fixed settings (window L=24, horizon H=12, data split, epochs, learning rate, seeds), data loading, metrics |
 | `cfgmodels.py` | Configurable versions of the seven architectures (LSTM, GRU, TCN, MLP, simplified patch Transformer, canonical N-BEATS, canonical PatchTST), the normalization wrappers (global, RevIN, last-value anchoring) and the two search spaces |
 | `engine.py` | Common training and forecasting loop for `cfgmodels.py` (early stopping, learning curves, direct and recursive forecasting) |
+| `dmtest.py` | The Diebold–Mariano test used by every script (exact formula in its docstring), the Holm adjustment, and the procedure of v1.0.0 for comparison |
 
-### 1b. Numbered scripts (15)
+### 1b. Numbered scripts (16)
 
-Scripts 03, 04, 08 and 09 train or fit models and write stored forecasts; the other eleven only read stored
+Scripts 03, 04, 08 and 09 train or fit models and write stored forecasts; the other twelve only read stored
 forecasts and data. Table and figure numbers refer to the manuscript.
 
 | Script | Reads | Writes | Manuscript output |
@@ -36,7 +38,8 @@ forecasts and data. Table and figure numbers refer to the manuscript.
 | `12_normalization_analysis.py` | `runs_r3/`, `runs/` | `results_r3/R3_*.csv`, `manuscript_assets/r3_*` | Tables 22-24; Figures 20-21 |
 | `13_normalization_backtest.py` | `runs_r3/`, `runs/` | `results_r3/R3_backtest.csv`, `manuscript_assets/r3_backtest.tex` | Table 25 |
 | `14_normalization_bootstrap.py` | `runs_r3/`, `runs/` | `results_r3/R3_bootstrap.csv` | bootstrap intervals, Section 6.13 |
-| `15_dm_tests_smape.py` | `runs*/` | `results_r3/R4_dm_smape.csv`, `manuscript_assets/tab_gru_tcn.tex`, `tab_dm_classical.tex` | Tables 9 and 11; all DM p-values (sAPE loss, Holm-adjusted; squared-error loss as robustness) |
+| `15_dm_tests_smape.py` | `runs*/` | `results_r3/R4_dm_smape.csv`, `R4_dm_status_by_family_h.csv`, `r4_summary.json`, `manuscript_assets/tab_gru_tcn.tex`, `tab_dm_classical.tex`, `tab_dm_availability.tex`, `tab_dm_sensitivity.tex` | Tables 9, 11, A2 and A3; all DM p-values (sAPE loss, Holm-adjusted; availability of each test; Bartlett and v1.0.0 sensitivity; squared-error loss) |
+| `16_bootstrap_simultaneous.py` | `runs/`, `runs_r3/` | `results_r3/R5_bootstrap_simultaneous.csv`, `R5_origin_differences.csv`, `r5_bootstrap_summary.json` | simultaneous (Bonferroni) intervals of Table 10 and Section 6.13, block lengths 2-4, origin-level loss differences |
 
 Figures 1 and 3 are drawn in LaTeX (TikZ) in the manuscript source; Figure 2 is a static excerpt of `data/monthly_series.csv`. Tables 1-4 are descriptive and written by hand; Table 15 lists the months flagged in `data/anomaly_flags.csv`.
 
@@ -48,7 +51,7 @@ Figures 1 and 3 are drawn in LaTeX (TikZ) in the manuscript source; Figure 2 is 
 | `run_additional.py` | 08-11: search (200 configurations x 3 seeds = 600 runs), 450 training runs (selected configurations, learning curves, second series, multivariate) | yes |
 | `run_normalization.py` | normalization x early-stopping factorial, canonical models, search with the corrections (280 configurations x 3 seeds = 840 runs), selected configurations | yes |
 | `run_normalization_backtest.py` | RevIN with the default architectures and a fixed budget at the four earlier cutoffs (Table 25) | yes |
-| `reproduce_results.py` | every analysis step (01, 02, 05, 08 `--summarize`, 10, 06, 07, 11-15) from the stored forecasts; `--check` compares the regenerated LaTeX tables with `manuscript_assets_reference/` | no |
+| `reproduce_results.py` | every analysis step (01, 02, 05, 08 `--summarize`, 10, 06, 07, 11-16) from the stored forecasts; `--check` compares the regenerated LaTeX tables with `manuscript_assets_reference/`; writes `audit/reproduction_log.txt` | no |
 
 The training launchers write 1,360 neural training runs in `runs_r3/` and 450 in `runs_tuned/`,
 `runs_curves_default/`, `runs_tx/` and `runs_mv/`; with the 680 runs of the main experiment and the 1,440 search
@@ -105,6 +108,17 @@ The folder suffixes `_r2`/`_r3` mark the second and third group of experiments: 
 
 ## 6. Reference outputs
 
-`manuscript_assets_reference/` holds the 22 LaTeX table files generated for the manuscript (20 used in the
-manuscript and the squared-error versions of Tables 9 and 11). With `python reproduce_results.py --check`, all 22
-regenerated files were byte-identical to these copies. The figures are regenerated in `manuscript_assets/`.
+`manuscript_assets_reference/` holds the 24 LaTeX table files generated for the manuscript (22 used in the
+manuscript and the squared-error versions of Tables 9 and 11). With `python reproduce_results.py --check`, all 24
+regenerated files were byte-identical to these copies (`audit/reproduction_log.txt`). The figures are regenerated in
+`manuscript_assets/`.
+
+## 7. Documentation and audit
+
+| File | Content |
+|---|---|
+| `README.md` | requirements, commands, design notes, statistical procedures |
+| `CLAIMS.md` | every numerical comparison stated in the manuscript, mapped to stored predictions, aggregation rule (mean single-run error or error of the seed-averaged forecast) and generated output |
+| `audit/reproduction_log.txt` | verification run of this release: environment, steps, check result, SHA-256 of every generated file |
+| `requirements.txt`, `requirements-verified.txt` | minimum versions; exact versions of the verification run |
+| `LICENSE` | MIT License for the code |

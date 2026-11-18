@@ -23,6 +23,8 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+from dmtest import dm_test
+
 from common import (RUNS_DIR, RESULTS_DIR, ANOMALY_FILE, H, smape, mae, rmse, bias,
                     load_series, TARGET, TRAIN_END, MAIN_CUTOFF)
 
@@ -85,27 +87,12 @@ def ensemble(sub, by):
 
 
 def dm_hln(e1, e2, h):
-    """Diebold-Mariano test with Harvey-Leybourne-Newbold small-sample correction.
-    Loss: squared error. Negative statistic -> forecast 1 more accurate.
-    The autocovariance lag is h-1, capped at n-2 when the sample is shorter;
-    returns NaN p-value when the HLN correction is undefined."""
+    """Diebold-Mariano test with Harvey-Leybourne-Newbold small-sample correction (dmtest.py).
+    Loss: squared error. Negative statistic -> forecast 1 more accurate. Returns NaN for tests that are not
+    defined (h >= n) or whose truncated long-run variance is not positive (see dmtest.py; no fallback)."""
     d = np.asarray(e1, float) ** 2 - np.asarray(e2, float) ** 2
-    n = len(d)
-    if n < 3 or np.allclose(d, 0):
-        return np.nan, np.nan, 0
-    lag = min(h - 1, n - 2)
-    dc = d - d.mean()
-    gam = [np.sum(dc[k:] * dc[:n - k]) / n for k in range(lag + 1)]
-    var = (gam[0] + 2 * sum(gam[1:])) / n
-    if var <= 0:
-        var = gam[0] / n
-    stat = d.mean() / np.sqrt(var)
-    hh = lag + 1
-    corr = (n + 1 - 2 * hh + hh * (hh - 1) / n) / n
-    if corr <= 0:
-        return stat, np.nan, lag
-    stat *= np.sqrt(corr)
-    return stat, 2 * stats.t.sf(abs(stat), n - 1), lag
+    t = dm_test(d, h)
+    return t["stat"], t["p"], t["status"]
 
 
 # ---------------------------------------------------------------------------
@@ -188,7 +175,7 @@ def main():
                     continue
                 st, p, lag = dm_hln(eh[a] - yv, eh[b] - yv, h)
                 rows.append(dict(evaluation=label, h=h, method_A=a, method_B=b, n=len(yv),
-                                 dm_stat=st, p_value=p, nw_lag=lag))
+                                 dm_stat=st, p_value=p, status=lag))
     t4 = pd.DataFrame(rows)
     t4.to_csv(RESULTS_DIR / "T4_dm_tests.csv", index=False)
 

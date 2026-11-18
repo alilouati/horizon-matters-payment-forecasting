@@ -26,6 +26,7 @@ import pandas as pd
 from scipy import stats
 
 from common import ROOT, H
+from dmtest import dm_test
 
 spec = importlib.util.spec_from_file_location("an", ROOT / "05_analyze.py")
 an = importlib.util.module_from_spec(spec)
@@ -34,18 +35,9 @@ dm_hln = an.dm_hln
 
 
 def dm_loss(d, h):
-    """DM test (HLN correction, lag h-1 capped at n-2) on a given loss differential d."""
-    d = np.asarray(d, float)
-    n = len(d)
-    lag = min(h - 1, n - 2)
-    dc = d - d.mean()
-    gam = [np.sum(dc[k:] * dc[:n - k]) / n for k in range(lag + 1)]
-    var = (gam[0] + 2 * sum(gam[1:])) / n
-    var = var if var > 0 else gam[0] / n
-    stat = d.mean() / np.sqrt(var)
-    hh = lag + 1
-    stat *= np.sqrt((n + 1 - 2 * hh + hh * (hh - 1) / n) / n)
-    return stat, 2 * stats.t.sf(abs(stat), n - 1)
+    """DM test on a given loss differential (dmtest.py: HLN factor with the actual horizon, no variance fallback)."""
+    t = dm_test(d, h)
+    return t["stat"], t["p"]
 
 
 def holm(p):
@@ -240,7 +232,7 @@ if len(tun):
                 a = ens[(ens.method == m) & (ens.h == h)].set_index("origin").e
                 b = ens[(ens.method == c) & (ens.h == h)].set_index("origin").e.reindex(a.index)
                 stat, p, lag = dm_hln(a.values, b.values, h)
-                dmr.append(dict(method=m, baseline=c, h=h, stat=stat, p=p, lag=lag))
+                dmr.append(dict(method=m, baseline=c, h=h, stat=stat, p=p, status=lag))
     dmr = pd.DataFrame(dmr)
     dmr.to_csv(RES / "R3_dm_horizon.csv", index=False)
 
@@ -416,7 +408,12 @@ if len(tun):
     tab = ["\\begin{table}[htbp]", "\\centering",
            "\\caption{Configurations selected by the equal-budget search with the corrections (20 configurations "
            "$\\times$ 3 seeds per architecture and strategy; validation early stopping; normalization searched; "
-           "selection on validation sMAPE only), evaluated with 10 new seeds. Epoch: mean early-stopping epoch; "
+           "selection on validation sMAPE only), evaluated with 10 new seeds. Norm.: external input normalization "
+           "chosen by the search (Global: one normalization estimated on the training period; RevIN: per-window "
+           "reversible instance normalization; Anchor: last-value anchoring); canonical PatchTST always applies its "
+           "own internal RevIN, so its Global entries refer to the external input encoding only. The selected set "
+           "therefore mixes normalizations and is distinct from the RevIN + early-stopping configurations of "
+           "Table~\\ref{tab:r3_factorial}. Epoch: mean early-stopping epoch; "
            "Mean: test sMAPE (\\%) of single runs, mean $\\pm$ SD over seeds; Avg.: test sMAPE (\\%) of the "
            "seed-averaged forecast (classical baselines: single deterministic forecast in both columns); rank among the 14 neural configurations and 4 classical "
            "baselines (seed-averaged forecasts, $h=1$ / complete horizon); Over: months overpredicted by the "
