@@ -1,4 +1,4 @@
-# Exact versions of the verification run of release v1.1.0 (analysis steps; no retraining)
+# Exact versions of the verification run of version v1.1.0 (analysis steps; no retraining)
 # python 3.13.18 on Linux-6.18.44-fc-v595-x86_64-with-glibc2.39
 numpy==2.5.3
 pandas==3.0.5

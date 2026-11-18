@@ -5,8 +5,10 @@ of the manuscript. `INVENTORY.md` lists every file and maps each script to the t
 `CLAIMS.md` maps every numerical comparison stated in the manuscript to the stored predictions, the aggregation rule
 and the generated output that supports it.
 
-**Version.** This is release v1.1.0 (tag `v1.1.0`), the version cited in the revised manuscript. The file
-`audit/reproduction_log.txt` records the verification run of this release (environment, every step, the check
+**Version.** This is version v1.1.0, the version cited in the revised manuscript; the manuscript identifies it
+by its commit (Data availability statement), which can be inspected and downloaded at any time from the repository's
+commit history. The file
+`audit/reproduction_log.txt` records the verification run of this version (environment, every step, the check
 against the reference tables and the SHA-256 checksum of every generated file).
 
 ## Requirements

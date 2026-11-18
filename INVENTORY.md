@@ -2,7 +2,7 @@
 
 The package has five kinds of content: Python code, configuration files, input data, stored forecasts and run
 logs, plus documentation (`README.md`, this file, `CLAIMS.md`) and the audit log of the verification run
-(`audit/reproduction_log.txt`). This inventory describes release v1.1.0. Every result table and figure of the manuscript can be regenerated from the input data and the stored
+(`audit/reproduction_log.txt`). This inventory describes version v1.1.0. Every result table and figure of the manuscript can be regenerated from the input data and the stored
 forecasts with one command (`python reproduce_results.py`, no PyTorch needed, about 5 minutes on a laptop CPU).
 Retraining the models from the input data is done with the four training launchers (Section 1c).
 
@@ -119,6 +119,6 @@ regenerated files were byte-identical to these copies (`audit/reproduction_log.t
 |---|---|
 | `README.md` | requirements, commands, design notes, statistical procedures |
 | `CLAIMS.md` | every numerical comparison stated in the manuscript, mapped to stored predictions, aggregation rule (mean single-run error or error of the seed-averaged forecast) and generated output |
-| `audit/reproduction_log.txt` | verification run of this release: environment, steps, check result, SHA-256 of every generated file |
+| `audit/reproduction_log.txt` | verification run of this version: environment, steps, check result, SHA-256 of every generated file |
 | `requirements.txt`, `requirements-verified.txt` | minimum versions; exact versions of the verification run |
 | `LICENSE` | MIT License for the code |
